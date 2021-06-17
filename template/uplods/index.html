@@ -1,0 +1,200 @@
+{%extends './base.html' %}
+{%block rk%}
+{% load static %}
+
+
+<form method="post" class="mt-3" enctype="multipart/form-data">
+    <div class="row container">
+    <div class="col-5">
+    {%csrf_token%}
+     <lable>Select Iamge</lable>
+    {{form.image}}
+    </div>
+    <div class="col-5 ">
+    <lable>Select Action</lable>
+    {{form.action}}
+    </div>
+    <div class="col-2">
+    <br>
+    <input class="btn btn-success block" type="submit" value="Proccess">
+     </div>
+  </div>
+</form>
+{% if list %}
+{% for l in list %}
+<a href="../media/{{l.image}}"> <img src="../media/{{l.image}}" class="rounded mx-auto d-block"  width="70%" height="70%"alt="prossed image" ></a>
+{% endfor %}
+{% endif %}
+
+<div class="jumbotron mt-5">
+  <h1 class="text-center m-3 font-weight-bold alert-info">Histograms</h1>
+  <center>
+  <img src="{% static 'image/img1.jpg' %}" style="width:300px;height:300;" class="img-thumbnail" alt="...">
+  <img src="{% static 'image/img1_K4qTOgc.jpg' %}"  style="width:300px;height:300;" class="img-thumbnail" alt="...">
+ </center>
+  <p>A histogram is a graph. A graph that shows frequency of anything. Usually histogram have bars that represent frequency of occurring of data in the whole data set.
+  <p>A Histogram has two axis the x axis and the y axis.</p>
+  <p>The x axis contains event whose frequency you have to count.</p>
+  <p>The y axis contains frequency.</p>
+  <p>The different heights of bar shows different frequency of occurrence of data.
+  Usually a histogram looks like this.</p></p>
+  <figure class="text alert-dark p-3">
+    <pre class="ce_pre"><code contenteditable spellcheck="false" class="language-python">
+import cv2 
+import numpy as np
+img = cv2.imread('lena.jpg',1)
+bgr_planes = cv2.split(img)
+histSize = 256
+histRange = (0, 256) # the upper boundary is exclusive
+accumulate = False
+b_hist = cv2.calcHist(bgr_planes, [0], None, [histSize], histRange, accumulate=accumulate)
+g_hist = cv2.calcHist(bgr_planes, [1], None, [histSize], histRange, accumulate=accumulate)
+r_hist = cv2.calcHist(bgr_planes, [2], None, [histSize], histRange, accumulate=accumulate)
+hist_w = 512
+hist_h = 400
+bin_w = int(round( hist_w/histSize ))
+histImage = np.zeros((hist_h, hist_w, 3), dtype=np.uint8)
+cv2.normalize(b_hist, b_hist, alpha=0, beta=hist_h, norm_type=cv2.NORM_MINMAX)
+cv2.normalize(g_hist, g_hist, alpha=0, beta=hist_h, norm_type=cv2.NORM_MINMAX)
+cv2.normalize(r_hist, r_hist, alpha=0, beta=hist_h, norm_type=cv2.NORM_MINMAX)
+for i in range(1, histSize):
+    cv2.line(histImage, ( bin_w*(i-1), hist_h - int(b_hist[i-1]) ),
+            ( bin_w*(i), hist_h - int(b_hist[i]) ),
+            ( 255, 0, 0), thickness=2)
+    cv2.line(histImage, ( bin_w*(i-1), hist_h - int(g_hist[i-1]) ),
+            ( bin_w*(i), hist_h - int(g_hist[i]) ),
+            ( 0, 255, 0), thickness=2)
+    cv2.line(histImage, ( bin_w*(i-1), hist_h - int(r_hist[i-1]) ),
+            ( bin_w*(i), hist_h - int(r_hist[i]) ),
+            ( 0, 0, 255), thickness=2)
+cv2.imshow('Histo_iamge',histImage)
+cv2.waitKey()
+</code></pre>
+</figure>
+
+
+<h1 class="text-center m-3  font-weight-bold alert-info">Colorize Image</h1>
+<center><img src="{% static 'image/img1.jpg' %}" style="width:300px;height:300;" class="img-thumbnail" alt="...">
+  <img src="{% static 'image/img1_ifAxaTc.jpg'%}"  style="width:300px;height:300;" class="img-thumbnail" alt="...">
+  </center>
+ <p>we will convert a BGR image to RGB with python and OpenCV.
+OpenCV uses BGR image format. So, when we read an image using cv2.imread() it interprets in BGR format by default.
+We can use cvtColor() method to convert a BGR image to RGB and vice-versa.</p>
+<figure class="text alert-dark p-3 mt-3">
+    <pre class="ce_pre"><code contenteditable spellcheck="false" class="language-python">
+import cv2 
+img = cv2.imread('lena.jpg',1)#Image source
+cnv_img=cv2.cvtColor(img,cv2.COLOR_BGR2HSV)
+cv2.imshow('Converted_Iamge',cnv_img)
+cv2.waitKey()
+</code></pre>
+</figure>
+
+
+<h1 class="text-center m-3  font-weight-bold alert-info">Grayscale Image</h1>
+<center><img src="{% static 'image/img1.jpg' %}" style="width:300px;height:300;" class="img-thumbnail" alt="...">
+  <img src="{% static 'image/img1_KHOAHF9.jpg' %}"  style="width:300px;height:300;" class="img-thumbnail" alt="...">
+  </center>
+  <p>A grayscale (or graylevel) image is simply one in which the only colors are shades of gray. The reason for differentiating such images from any other sort of color image is that less information needs to be provided for each pixel. In fact a `gray' color is one in which the red, green and blue components all have equal intensity in RGB space, and so it is only necessary to specify a single intensity value for each pixel, as opposed to the three intensities needed to specify each pixel in a full color image. </p>
+<figure class="text alert-dark p-3 mt-3">
+    <pre class="ce_pre"><code contenteditable spellcheck="false" class="language-python">
+import cv2 
+img = cv2.imread('lena.jpg',1)#Image source
+cnv_img=cv2.cvtColor(img,cv2.COLOR_RGB2GRAY)
+cv2.imshow('Converted_Iamge',cnv_img)
+cv2.waitKey()
+</code></pre>
+</figure>
+
+
+<h1 class="text-center m-3  font-weight-bold alert-info">Blure Iamge</h1>
+<center><img src="{% static 'image/img1.jpg' %}" style="width:300px;height:300;" class="img-thumbnail" alt="...">
+  <img src="{% static 'image/img1_MzkK2V1.jpg' %}"  style="width:300px;height:300;" class="img-thumbnail" alt="...">
+  </center>
+  <p>In blurring, we simple blur an image. An image looks more sharp or more detailed if we are able to perceive all the objects and their shapes correctly in it. For example. An image with a face, looks clear when we are able to identify eyes, ears, nose, lips, forehead e.t.c very clear. This shape of an object is due to its edges. So in blurring, we simple reduce the edge content and makes the transition form one color to the other very smooth. </p>
+<figure class="text alert-dark p-3 mt-3">
+    <pre class="ce_pre"><code contenteditable spellcheck="false" class="language-python">
+import cv2 
+img = cv2.imread('lena.jpg',1)#Image source
+cnv_img=cv2.blur(img,(25,25))
+cv2.imshow('Converted_Iamge',cnv_img)
+cv2.waitKey()
+</code></pre>
+</figure>
+
+
+
+<h1 class="text-center m-3  font-weight-bold alert-info">Bainary Image</h1>
+<center><img src="{% static 'image/img1.jpg' %}" style="width:300px;height:300;" class="img-thumbnail" alt="...">
+  <img src="{% static 'image/img1_83SNlUk.jpg' %}"  style="width:300px;height:300;" class="img-thumbnail" alt="...">
+  </center>
+  <p>Binary images are images whose pixels have only two possible intensity values. They are normally displayed as black and white. Numerically, the two values are often 0 for black, and either 1 or 255 for white </p>
+<figure class="text alert-dark p-3 mt-3">
+    <pre class="ce_pre"><code contenteditable spellcheck="false" class="language-python">
+import cv2
+img = cv2.imread('lena.jpg',1)#Inamge source
+gray=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+v, cnv_img =cv2.threshold(gray,150,60,cv2.THRESH_BINARY)
+cv2.imshow('Converted_Iamge',cnv_img)
+cv2.waitKey()
+</code>
+</pre>
+</figure>
+
+
+<h1 class="text-center m-3  font-weight-bold alert-info">Bainary Invert Image</h1>
+<center><img src="{% static 'image/img1.jpg' %}" style="width:300px;height:300;" class="img-thumbnail" alt="...">
+  <img src="{% static 'image/img1_kw2bYSd.jpg' %}"  style="width:300px;height:300;" class="img-thumbnail" alt="...">
+  </center>
+  <p>Binary Inverting a binary image means inverting the pixel values. From a visual perspective, when we invert a binary image, white pixels will be converted to black, and black pixels will be converted to white. </p>
+<figure class="text alert-dark p-3 mt-3">
+    <pre class="ce_pre"><code contenteditable spellcheck="false" class="language-python">
+import cv2
+img = cv2.imread('lena.jpg',1)#Inamge source
+gray=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+v, img=cv2.threshold(gray,150,60,cv2.THRESH_BINARY)
+cnv_img=cv2.bitwise_not(img)
+cv2.imshow('Converted_Iamge',cnv_img)
+cv2.waitKey()
+</code>
+</pre>
+</figure>
+
+
+
+<h1 class="text-center m-3  font-weight-bold alert-info">Adge Detection</h1>
+<center><img src="{% static 'image/img1.jpg' %}" style="width:300px;height:300;" class="img-thumbnail" alt="...">
+  <img src="{% static 'image/img1_Bjo2J2S.jpg' %}"  style="width:300px;height:300;" class="img-thumbnail" alt="...">
+  </center>
+  <p>Most of the shape information of an image is enclosed in edges. So first we detect these edges in an image and by using these filters and then by enhancing those areas of image which contains edges, sharpness of the image will increase and image will become clearer. </p>
+<figure class="text alert-dark p-3 mt-3">
+    <pre class="ce_pre"><code contenteditable spellcheck="false" class="language-python">
+import cv2
+img = cv2.imread('lena.jpg',1)#Image source
+cnv_img=cv2.Canny(img,60,20,10)  
+cv2.imshow('Converted_Iamge',cnv_img)
+cv2.waitKey()
+</code>
+</pre>
+</figure>
+
+<h1 class="text-center m-3  font-weight-bold alert-info">Reduce Noice</h1>
+<center><img src="{% static 'image/img1.jpg' %}" style="width:300px;height:300;" class="img-thumbnail" alt="...">
+  <img src="{% static 'image/img1_Rln0rpi.jpg' %}"  style="width:300px;height:300;" class="img-thumbnail" alt="...">
+  </center>
+  <p>Most of the shape information of an image is enclosed in edges. So first we detect these edges in an image and by using these filters and then by enhancing those areas of image which contains edges, sharpness of the image will increase and image will become clearer. </p>
+<figure class="text alert-dark p-3 mt-3">
+    <pre class="ce_pre"><code contenteditable spellcheck="false" class="language-python">
+import cv2
+img = cv2.imread('lena.jpg',1)#Image source
+cnv_img=cv2.fastNlMeansDenoisingColored(img,None,10,10,7,21) 
+cv2.imshow('Converted_Iamge',cnv_img)
+cv2.waitKey()
+</code>
+</pre>
+</figure>
+
+
+
+</div>
+{%endblock%}
